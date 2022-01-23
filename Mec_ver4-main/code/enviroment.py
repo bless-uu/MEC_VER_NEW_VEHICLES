@@ -35,48 +35,48 @@ class BusEnv(gym.Env):
         
         self.data_bus = {"900":data900, "901":data901, "902":data902, "903":data903, "904":data904}
         #streaming data of task
-        if env != "DQL" and env != "FDQO": 
-            self.index_of_episode = 0
-            self.data = pd.read_csv(os.path.join(DATA_TASK, "datatask{}.csv".format(self.index_of_episode)),header=None).to_numpy()
-            self.data = np.sort(self.data, axis=0)
-            #self.data[:,2] = self.data[:,2] / 1000.0
-            #self.data[:,1] = self.data[:,1] / 1024.0
+        # if env != "DQL" and env != "FDQO": 
+        #     self.index_of_episode = 0
+        #     self.data = pd.read_csv(os.path.join(DATA_TASK, "datatask{}.csv".format(self.index_of_episode)),header=None).to_numpy()
+        #     self.data = np.sort(self.data, axis=0)
+        #     #self.data[:,2] = self.data[:,2] / 1000.0
+        #     #self.data[:,1] = self.data[:,1] / 1024.0
             
-            self.n_quality_tasks = [0,0,0]
-            #queue contains the beginning tasks
-            self.queue = copy.deepcopy(self.data[self.data[:,0]==self.data[0][0]])
-            #the remaining
-            self.data = self.data[self.data[:,0]!=self.data[0][0]]
-            self.result = []
-            self.time_last = self.data[-1][0]
-            self.time = self.queue[0][0]
+        #     self.n_quality_tasks = [0,0,0]
+        #     #queue contains the beginning tasks
+        #     self.queue = copy.deepcopy(self.data[self.data[:,0]==self.data[0][0]])
+        #     #the remaining
+        #     self.data = self.data[self.data[:,0]!=self.data[0][0]]
+        #     self.result = []
+        #     self.time_last = self.data[-1][0]
+        #     self.time = self.queue[0][0]
 
-            #first observation of agent about eviroment
-            self.observation = np.zeros(2 + 2 * NUM_ACTION)
-            for i in range(NUM_ACTION):
-                self.observation[2 * i - 2] = self.readexcel(900 + i,self.queue[0][0])
-            self.observation[-3] = self.queue[0][1]
-            self.observation[-2] = self.queue[0][2]
-            self.observation[-1] = self.queue[0][4]
-            # self.observation = np.array([self.readexcel(900,self.queue[0][0]),
-            #                              0.0,
-            #                              #COMPUTATIONAL_CAPACITY_900,
-            #                              self.readexcel(901,self.queue[0][0]),
-            #                              0,
-            #                              #COMPUTATIONAL_CAPACITY_901,
-            #                              self.readexcel(902,self.queue[0][0]),
-            #                              0,
-            #                              #COMPUTATIONAL_CAPACITY_902,
-            #                              0,
-            #                              #COMPUTATIONAL_CAPACITY_LOCAL,
-            #                              self.queue[0][1],  # required computational resource
-            #                              self.queue[0][2],  # size of packet containing the tasks
-            #                              self.queue[0][4]   # deadline
-            #                              ])
-            #print(self.observation)
-        else:
-            self.index_of_episode = -1
-            self.observation = np.array([-1])
+        #     #first observation of agent about eviroment
+        #     self.observation = np.zeros(2 + 2 * NUM_ACTION)
+        #     for i in range(NUM_ACTION):
+        #         self.observation[2 * i - 2] = self.readexcel(900 + i,self.queue[0][0])
+        #     self.observation[-3] = self.queue[0][1]
+        #     self.observation[-2] = self.queue[0][2]
+        #     self.observation[-1] = self.queue[0][4]
+        #     # self.observation = np.array([self.readexcel(900,self.queue[0][0]),
+        #     #                              0.0,
+        #     #                              #COMPUTATIONAL_CAPACITY_900,
+        #     #                              self.readexcel(901,self.queue[0][0]),
+        #     #                              0,
+        #     #                              #COMPUTATIONAL_CAPACITY_901,
+        #     #                              self.readexcel(902,self.queue[0][0]),
+        #     #                              0,
+        #     #                              #COMPUTATIONAL_CAPACITY_902,
+        #     #                              0,
+        #     #                              #COMPUTATIONAL_CAPACITY_LOCAL,
+        #     #                              self.queue[0][1],  # required computational resource
+        #     #                              self.queue[0][2],  # size of packet containing the tasks
+        #     #                              self.queue[0][4]   # deadline
+        #     #                              ])
+        #     #print(self.observation)
+        # else:
+        self.index_of_episode = -1
+        self.observation = np.array([-1])
         
         #save result into file cs
                 #configuration for connection radio between bus and 

@@ -138,6 +138,44 @@ def Run_DQL(folder_name):
         dqn.fit(env, nb_steps= 102000, visualize=False, verbose=2,callbacks=[callbacks,callback2])
     except Exception as e:
         print(e)
+        
+def Run_DDQL(folder_name):
+    model=build_model(NUM_STATE, NUM_ACTION)
+    num_actions = NUM_ACTION
+    policy = EpsGreedyQPolicy(0.1)
+    MyGlobals.folder_name = folder_name + '/'
+    env = BusEnv("DDQL")
+    env.seed(123)
+    memory = SequentialMemory(limit=5000, window_length=1)
+    
+    dqn = DQNAgent(model=model, nb_actions=num_actions, memory=memory, nb_steps_warmup=10,\
+              target_model_update=1e-3, policy=policy,gamma=0.9,memory_interval=1, enable_double_dqn = True)
+    callbacks = CustomerTrainEpisodeLogger("DDQL_5phut.csv")
+    callback2 = ModelIntervalCheckpoint("weight_DDQL.h5f",interval=50000)
+    dqn.compile(Adam(lr=1e-3), metrics=['mae'])
+    try:
+        dqn.fit(env, nb_steps= 102000, visualize=False, verbose=2,callbacks=[callbacks,callback2])
+    except Exception as e:
+        print(e)
+        
+def Run_DuelingDQL(folder_name):
+    model=build_model(NUM_STATE, NUM_ACTION)
+    num_actions = NUM_ACTION
+    policy = EpsGreedyQPolicy(0.1)
+    MyGlobals.folder_name = folder_name + '/'
+    env = BusEnv("DDQL")
+    env.seed(123)
+    memory = SequentialMemory(limit=5000, window_length=1)
+    
+    dqn = DQNAgent(model=model, nb_actions=num_actions, memory=memory, nb_steps_warmup=10,\
+              target_model_update=1e-3, policy=policy,gamma=0.9,memory_interval=1, enable_dueling_network = True)
+    callbacks = CustomerTrainEpisodeLogger("DDQL_5phut.csv")
+    callback2 = ModelIntervalCheckpoint("weight_DDQL.h5f",interval=50000)
+    dqn.compile(Adam(lr=1e-3), metrics=['mae'])
+    try:
+        dqn.fit(env, nb_steps= 102000, visualize=False, verbose=2,callbacks=[callbacks,callback2])
+    except Exception as e:
+        print(e)
 
 def Run_FDQO():
     FDQO_method = Model_Deep_Q_Learning(14,4)
@@ -161,17 +199,25 @@ def Run_FDQO():
     files.close()
 
 if __name__=="__main__":
-    types = "DQL"
-    # if len(sys.argv) > 1:
-    #     types = sys.argv[1]
-    if types =="FDQO":
-        Run_FDQO()
-    elif types == "Random":
-        Run_Random()
-    elif types == "Fuzzy":
-        Run_Fuzzy()
-    elif types == "DQL":
-        # for i in range(1, 6):
-        #     Run_DQL("DQN" + str(i))
-        Run_DQL("DQN3")
-    #create model FDQO
+    # for i in range(1, 6):
+    #     Run_DQL("DQN" + str(i))
+    #Run_DQL("DQN2")
+    #Run_DDQL("DDQN3")
+    Run_DuelingDQL("DuelingDQN2")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
