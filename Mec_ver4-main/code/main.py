@@ -30,6 +30,8 @@ from policy import *
 from callback import *
 from fuzzy_controller import *
 import os
+from config import *
+from MyGlobal import MyGlobals
 
 from rl.agents.dqn import DQNAgent
 
@@ -114,25 +116,26 @@ def build_model(state_size, num_actions):
     model = Model(inputs=input, outputs=output)
     return model
 
-def Run_DQL():
-    model=build_model(10,4)
-    num_actions = 4
+def Run_DQL(folder_name):
+    model=build_model(NUM_STATE, NUM_ACTION)
+    num_actions = NUM_ACTION
     policy = EpsGreedyQPolicy(0.1)
+    MyGlobals.folder_name = folder_name + '/'
     env = BusEnv("DQL")
     env.seed(123)
     memory = SequentialMemory(limit=5000, window_length=1)
     
     dqn = DQNAgent(model=model, nb_actions=num_actions, memory=memory, nb_steps_warmup=10,\
               target_model_update=1e-3, policy=policy,gamma=0.9,memory_interval=1)
-    files = open("testDQL.csv","w")
-    files.write("kq\n")
+    #files = open("testDQL.csv","w")
+    #files.write("kq\n")
     #create callback
     callbacks = CustomerTrainEpisodeLogger("DQL_5phut.csv")
     callback2 = ModelIntervalCheckpoint("weight_DQL.h5f",interval=50000)
-    callback3 = TestLogger11(files)
+    #callback3 = TestLogger11(files)
     dqn.compile(Adam(lr=1e-3), metrics=['mae'])
     try:
-        dqn.fit(env, nb_steps= 104838, visualize=False, verbose=2,callbacks=[callbacks,callback2])
+        dqn.fit(env, nb_steps= 102000, visualize=False, verbose=2,callbacks=[callbacks,callback2])
     except Exception as e:
         print(e)
 
@@ -159,8 +162,8 @@ def Run_FDQO():
 
 if __name__=="__main__":
     types = "DQL"
-    if len(sys.argv) > 1:
-        types = sys.argv[1]
+    # if len(sys.argv) > 1:
+    #     types = sys.argv[1]
     if types =="FDQO":
         Run_FDQO()
     elif types == "Random":
@@ -168,5 +171,7 @@ if __name__=="__main__":
     elif types == "Fuzzy":
         Run_Fuzzy()
     elif types == "DQL":
-        Run_DQL()
+        # for i in range(1, 6):
+        #     Run_DQL("DQN" + str(i))
+        Run_DQL("DQN3")
     #create model FDQO
