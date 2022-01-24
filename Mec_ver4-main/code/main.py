@@ -202,8 +202,8 @@ if __name__=="__main__":
     # for i in range(1, 6):
     #     Run_DQL("DQN" + str(i))
     #Run_DQL("DQN2")
-    #Run_DDQL("DDQN3")
-    Run_DuelingDQL("DuelingDQN2")
+    #Run_DDQL("DDQN3_no_energy")
+    Run_DuelingDQL("DuelingDQN3")
 
 
 
