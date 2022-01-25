@@ -6,7 +6,7 @@ LINK_PROJECT = LINK_PROJECT.parent.parent
 #print(LINK_PROJECT)
 DATA_LOCATION = "data_task/data2"
 DATA_DIR = os.path.join(LINK_PROJECT, "data")
-RESULT_DIR = os.path.join(LINK_PROJECT, "result/result1/")
+RESULT_DIR = os.path.join(LINK_PROJECT, "result/result3/")
 DATA_TASK = os.path.join(LINK_PROJECT, DATA_LOCATION)
 COMPUTATIONAL_CAPACITY_900 = 1 # Ghz
 COMPUTATIONAL_CAPACITY_901 = 1.2 # Ghz

@@ -1,4 +1,5 @@
 from tensorflow.keras.optimizers import Adam
+import random
 import copy
 import json
 import timeit
@@ -36,22 +37,29 @@ from MyGlobal import MyGlobals
 from rl.agents.dqn import DQNAgent
 
 os.environ["CUDA_VISIBLE_DEVICES"]="-1"
-def Run_Random():
-    files=open("random2.csv","w")
-    files.write("kq\n")
-    for i in range(15):
-        tong=0
-        h=0
-        a=[]
-        c=False
-        while c==False:
-            a,b,c,d=env.step(np.random.choice([0,0,0,0,0,1,2,3]))
-            tong+=b
-            if c==True :
-                if i!=14:
-                    env.reset()
-                files.write(str(tong)+"\n")
-                print(tong)
+def Run_Random(folder_name):
+    MyGlobals.folder_name = folder_name + '/'
+    env = BusEnv("Random")
+    env.seed(123)
+    observation = None
+    done = False
+    actions = [0, 1, 2, 3, 4, 5]
+    for i in range(100000):
+        if observation is None:
+            try:
+                env.reset()
+            except Exception as e:
+                print(e)
+        # Determine the percentage of offload to server
+        action = random.choices(actions, weights=(1, 0, 0, 0, 0, 0))[0]
+        observation, r, done, info = env.step(action)
+        if done:
+            done = False
+            try:
+                env.reset()
+            except Exception as e:
+                print(e)
+            
 
 def Run_Fuzzy():
     sumreward = 0
@@ -135,7 +143,9 @@ def Run_DQL(folder_name):
     #callback3 = TestLogger11(files)
     dqn.compile(Adam(lr=1e-3), metrics=['mae'])
     try:
-        dqn.fit(env, nb_steps= 102000, visualize=False, verbose=2,callbacks=[callbacks,callback2])
+        dqn.fit(env, nb_steps= 80000, visualize=False, verbose=2,callbacks=[callbacks,callback2])
+        dqn.policy = EpsGreedyQPolicy(0.0)
+        dqn.test(env, nb_episodes = 20)
     except Exception as e:
         print(e)
         
@@ -154,7 +164,9 @@ def Run_DDQL(folder_name):
     callback2 = ModelIntervalCheckpoint("weight_DDQL.h5f",interval=50000)
     dqn.compile(Adam(lr=1e-3), metrics=['mae'])
     try:
-        dqn.fit(env, nb_steps= 102000, visualize=False, verbose=2,callbacks=[callbacks,callback2])
+        dqn.fit(env, nb_steps= 80000, visualize=False, verbose=2,callbacks=[callbacks,callback2])
+        dqn.policy = EpsGreedyQPolicy(0.0)
+        dqn.test(env, nb_episodes = 20)
     except Exception as e:
         print(e)
         
@@ -169,11 +181,35 @@ def Run_DuelingDQL(folder_name):
     
     dqn = DQNAgent(model=model, nb_actions=num_actions, memory=memory, nb_steps_warmup=10,\
               target_model_update=1e-3, policy=policy,gamma=0.9,memory_interval=1, enable_dueling_network = True)
-    callbacks = CustomerTrainEpisodeLogger("DDQL_5phut.csv")
-    callback2 = ModelIntervalCheckpoint("weight_DDQL.h5f",interval=50000)
+    callbacks = CustomerTrainEpisodeLogger("DuelDQL_5phut.csv")
+    callback2 = ModelIntervalCheckpoint("weight_DuelDQL.h5f",interval=50000)
     dqn.compile(Adam(lr=1e-3), metrics=['mae'])
     try:
-        dqn.fit(env, nb_steps= 102000, visualize=False, verbose=2,callbacks=[callbacks,callback2])
+        dqn.fit(env, nb_steps= 80000, visualize=False, verbose=2,callbacks=[callbacks,callback2])
+        dqn.policy = EpsGreedyQPolicy(0.0)
+        dqn.test(env, nb_episodes = 20)
+    except Exception as e:
+        print(e)
+        
+def Run_DoubleDuelingDQL(folder_name):
+    model=build_model(NUM_STATE, NUM_ACTION)
+    num_actions = NUM_ACTION
+    policy = EpsGreedyQPolicy(0.1)
+    MyGlobals.folder_name = folder_name + '/'
+    env = BusEnv("DDQL")
+    env.seed(123)
+    memory = SequentialMemory(limit=5000, window_length=1)
+    
+    dqn = DQNAgent(model=model, nb_actions=num_actions, memory=memory, nb_steps_warmup=10,\
+              target_model_update=1e-3, policy=policy,gamma=0.9,memory_interval=1, enable_double_dqn = True,
+              enable_dueling_network = True)
+    callbacks = CustomerTrainEpisodeLogger("DDuelDQL_5phut.csv")
+    callback2 = ModelIntervalCheckpoint("weight_DDuelDQL.h5f",interval=50000)
+    dqn.compile(Adam(lr=1e-3), metrics=['mae'])
+    try:
+        dqn.fit(env, nb_steps= 80000, visualize=False, verbose=2,callbacks=[callbacks,callback2])
+        dqn.policy = EpsGreedyQPolicy(0.0)
+        dqn.test(env, nb_episodes = 20)
     except Exception as e:
         print(e)
 
@@ -201,9 +237,11 @@ def Run_FDQO():
 if __name__=="__main__":
     # for i in range(1, 6):
     #     Run_DQL("DQN" + str(i))
-    #Run_DQL("DQN2")
-    #Run_DDQL("DDQN3_no_energy")
-    Run_DuelingDQL("DuelingDQN3")
+    #Run_DQL("DQN1")
+    #Run_DDQL("DDQN1_no_energy")
+    Run_DuelingDQL("DuelingDQN1_no_energy")
+    #Run_DoubleDuelingDQL("DoubleDuelingDQN1")
+    #Run_Random("Random_1_0_0_0_0_0")
 
 
 
