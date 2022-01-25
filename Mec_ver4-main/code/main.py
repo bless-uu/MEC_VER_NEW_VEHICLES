@@ -72,7 +72,7 @@ def build_model(state_size, num_actions):
 
     x = Dense(32, activation='relu')(x)
   
-    x = Dense(8, activation='relu')(x)
+    x = Dense(16, activation='relu')(x)
 
     output = Dense(num_actions, activation='linear')(x)
     model = Model(inputs=input, outputs=output)
@@ -193,7 +193,7 @@ if __name__=="__main__":
     #     Run_DQL("DQN" + str(i))
     #Run_DQL("DQN1")
     #Run_DDQL("DDQN3_no_energy")
-    Run_DuelingDQL("DuelingDQN1_1VS")
+    Run_DuelingDQL("DuelingDQN3_"+str(NUM_ACTION - 1)+"VS")
     #Run_DoubleDuelingDQL("DoubleDuelingDQN1")
     #Run_Random("Random_4_1_1_1_1_1")
 

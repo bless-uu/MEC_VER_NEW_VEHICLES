@@ -226,7 +226,8 @@ class BusEnv(gym.Env):
         if drop_task == 1:
             self.sum_delay = time_delay - self.observation[-1]
             
-        reward = 1 if (self.observation[-1] >= time_delay) else -20
+        #reward = 1 if (self.observation[-1] >= time_delay) else -20
+        reward = 1 if (self.observation[-1] >= time_delay) else -100
         reward -= energy
         #reward = 1 if (self.observation[-1] >= time_delay) else 0
         
