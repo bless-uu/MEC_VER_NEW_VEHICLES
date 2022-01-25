@@ -37,6 +37,7 @@ from MyGlobal import MyGlobals
 from rl.agents.dqn import DQNAgent
 
 os.environ["CUDA_VISIBLE_DEVICES"]="-1"
+
 def Run_Random(folder_name):
     MyGlobals.folder_name = folder_name + '/'
     env = BusEnv("Random")
@@ -51,7 +52,7 @@ def Run_Random(folder_name):
             except Exception as e:
                 print(e)
         # Determine the percentage of offload to server
-        action = random.choices(actions, weights=(1, 0, 0, 0, 0, 0))[0]
+        action = random.choices(actions, weights=(4, 1, 1, 1, 1, 1))[0]
         observation, r, done, info = env.step(action)
         if done:
             done = False
@@ -60,53 +61,6 @@ def Run_Random(folder_name):
             except Exception as e:
                 print(e)
             
-
-def Run_Fuzzy():
-    sumreward = 0
-    nreward = 0
-    fuzzy_logic = Fuzzy_Controller()
-    files = open("Fuzzy_5phut.csv","w")
-    files1 = open("testFuzzy.csv","w")
-
-    files.write("kq,sl,mean_reward\n")
-    env = BusEnv("Fuzzy")
-    #env.seed(123)
-    start = timeit.default_timer()
-    #env.reset()
-    for i in range(100):
-        tong=0
-        h=0
-        soluong=0
-
-        a=env.observation
-        c=False
-        while c==False:
-            #Rmi=(10*np.log2(1+46/(np.power(a[(1-1)*3],4)*100)))/8
-            #m1=a[11]/a[2+(1-1)*3]+max(a[12]/(Rmi),a[1+(1-1)*3])
-            # Rmi=(10*np.log2(1+46/(np.power(a[(2-1)*3],4)*100)))/8
-            # m2=a[11]/a[2+(2-1)*3]+max(a[12]/(Rmi),a[1+(2-1)*3])
-            # Rmi=(10*np.log2(1+46/(np.power(a[(3-1)*3],4)*100)))/8
-            # m3=a[11]/a[2+(3-1)*3]+max(a[12]/(Rmi),a[1+(3-1)*3])
-            # m0=a[9]+a[11]/a[10]
-            #action=np.argmin([m0,m1,m2,m3])
-            
-            action=np.random.choice([0,0,0,1,2,3])
-            action=0
-            action=fuzzy_logic.choose_action(a)
-            a,b,c,d=env.step(action)
-            tong+=b
-            sumreward = sumreward +b
-            nreward = nreward + 1
-            soluong+=1
-            files1.write(str(sumreward / nreward)+"\n")
-            if c==True :
-                if i!=99:
-                    env.reset()
-                files.write(str(tong)+","+str(soluong)+","+str(tong/soluong)+"\n")
-                print(tong)
-    stop = timeit.default_timer()
-    print('Time: ', stop - start)  
-    files.close()
 
 #using for DQL
 def build_model(state_size, num_actions):
@@ -238,10 +192,10 @@ if __name__=="__main__":
     # for i in range(1, 6):
     #     Run_DQL("DQN" + str(i))
     #Run_DQL("DQN1")
-    #Run_DDQL("DDQN1_no_energy")
-    Run_DuelingDQL("DuelingDQN1_no_energy")
+    #Run_DDQL("DDQN3_no_energy")
+    Run_DuelingDQL("DuelingDQN1_1VS")
     #Run_DoubleDuelingDQL("DoubleDuelingDQN1")
-    #Run_Random("Random_1_0_0_0_0_0")
+    #Run_Random("Random_4_1_1_1_1_1")
 
 
 

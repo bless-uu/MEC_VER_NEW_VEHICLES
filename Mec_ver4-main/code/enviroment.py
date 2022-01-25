@@ -32,8 +32,12 @@ class BusEnv(gym.Env):
         data902 = self.preprocessBusLoction("C51516.xlsx")
         data903 = self.preprocessBusLoction("C51516.xlsx") 
         data904 = self.preprocessBusLoction("C51516.xlsx")
+        data905 = self.preprocessBusLoction("C51542.xlsx")
+        data906 = self.preprocessBusLoction("C51543.xlsx")
+        data907 = self.preprocessBusLoction("C51555.xlsx")
         
-        self.data_bus = {"900":data900, "901":data901, "902":data902, "903":data903, "904":data904}
+        self.data_bus = {"900":data900, "901":data901, "902":data902, "903":data903, 
+                         "904":data904, "905":data905, "906":data906, "907":data907}
         #streaming data of task
         # if env != "DQL" and env != "FDQO": 
         #     self.index_of_episode = 0
@@ -221,9 +225,11 @@ class BusEnv(gym.Env):
         drop_task = 0 if (self.observation[-1] >= time_delay) else 1
         if drop_task == 1:
             self.sum_delay = time_delay - self.observation[-1]
-        # reward = 1 if (self.observation[-1] >= time_delay) else -20
-        # reward -= energy
-        reward = 1 if (self.observation[-1] >= time_delay) else 0
+            
+        reward = 1 if (self.observation[-1] >= time_delay) else -20
+        reward -= energy
+        #reward = 1 if (self.observation[-1] >= time_delay) else 0
+        
         #self.node_computing.write(",{}\n".format(reward))
         
         # if reward == 1:
@@ -332,7 +338,7 @@ class BusEnv(gym.Env):
         self.guess_count = 0
         
         self.n_quality_tasks = [0, 0, 0]
-        self.n_tasks_in_node=[0] * 6
+        self.n_tasks_in_node=[0] * NUM_ACTION
         self.index_of_episode = self.index_of_episode + 1
         self.data = pd.read_csv(os.path.join(DATA_TASK,"datatask{}.csv".format(self.index_of_episode)),header=None).to_numpy()
         self.data = np.sort(self.data, axis=0)
