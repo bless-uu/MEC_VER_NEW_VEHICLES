@@ -229,7 +229,7 @@ class BusEnv(gym.Env):
         #reward = 1 if (self.observation[-1] >= time_delay) else -20
         reward = 1 if (self.observation[-1] >= time_delay) else -100
         reward -= energy
-        #reward = 1 if (self.observation[-1] >= time_delay) else 0
+        #reward = 1 if (self.observation[-1] >= time_delay) else -100
         
         #self.node_computing.write(",{}\n".format(reward))
         

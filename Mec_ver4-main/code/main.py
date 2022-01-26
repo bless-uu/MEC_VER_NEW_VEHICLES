@@ -66,7 +66,7 @@ def Run_Random(folder_name):
 def build_model(state_size, num_actions):
     input = Input(shape=(1,state_size))
     x = Flatten()(input)
-    x = Dense(16, activation='relu')(x)
+    #x = Dense(16, activation='relu')(x)
 
     x = Dense(32, activation='relu')(x)
 
@@ -191,9 +191,10 @@ def Run_FDQO():
 if __name__=="__main__":
     # for i in range(1, 6):
     #     Run_DQL("DQN" + str(i))
-    #Run_DQL("DQN1")
-    #Run_DDQL("DDQN3_no_energy")
-    Run_DuelingDQL("DuelingDQN3_"+str(NUM_ACTION - 1)+"VS")
+    #Run_DQL("DQN7")
+    #Run_DDQL("DDQN5_no_energy")
+    #Run_DDQL("DDQN1_no_energy_"+str(NUM_ACTION - 1)+"VS")
+    Run_DuelingDQL("DuelingDQN5")
     #Run_DoubleDuelingDQL("DoubleDuelingDQN1")
     #Run_Random("Random_4_1_1_1_1_1")
 
